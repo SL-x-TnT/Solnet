@@ -7,6 +7,14 @@ using System.Text;
 
 namespace Solnet.Programs.Utilities
 {
+    public class Fraction
+    {
+        public ulong Numerator { get; set; }
+        public ulong Denominator { get; set; }
+
+        public decimal Value => Denominator == 0 ? 0 : Numerator / (decimal)Denominator;
+
+    }
     /// <summary>
     /// Extension methods for deserialization of program data using <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
@@ -26,6 +34,16 @@ namespace Solnet.Programs.Utilities
             return data[offset];
         }
 
+        public static Fraction GetFraction(this ReadOnlySpan<byte> data, int offset)
+        {
+            Fraction fraction = new Fraction
+            {
+                Numerator = data.GetU64(offset),
+                Denominator = data.GetU64(offset + 8)
+            };
+
+            return fraction;
+        }
         /// <summary>
         /// Get a 16-bit unsigned integer from the span at the given offset.
         /// </summary>
